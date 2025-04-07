@@ -13,10 +13,11 @@ import java.util.List;
 public interface HitRepository extends JpaRepository<Hit, Long> {
 
     @Query(
-            value = "SELECT h.app, h.uri, COUNT(h.ip) hits "
+            value = "SELECT h.app, h.uri, COUNT(DISTINCT h.ip) hits "
                     + "FROM hits as h "
                     + "WHERE h.created_at >= :start AND h.created_at <= :end "
-                    + "GROUP BY h.app, h.uri",
+                    + "GROUP BY h.app, h.uri "
+                    + "ORDER BY hits DESC",
              nativeQuery = true
     )
     List<StatsView> getStatsByDatesUnique(LocalDateTime start, LocalDateTime end);
@@ -31,10 +32,11 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
 
 
     @Query(
-            value = "SELECT h.app, h.uri, COUNT(h.ip) hits "
+            value = "SELECT h.app, h.uri, COUNT(DISTINCT h.ip) hits "
                     + "FROM hits as h "
                     + "WHERE h.created_at >= :start AND h.created_at <= :end AND h.uri IN (:uris) "
-                    + "GROUP BY h.app, h.uri",
+                    + "GROUP BY h.app, h.uri "
+                    + "ORDER BY hits DESC",
             nativeQuery = true
     )
     List<StatsView> getStatsByDatesAndUriUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
