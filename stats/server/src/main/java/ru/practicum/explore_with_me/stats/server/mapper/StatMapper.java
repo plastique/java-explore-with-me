@@ -5,7 +5,8 @@ import ru.practicum.explore_with_me.stats.server.dto.StatsDto;
 
 public class StatMapper {
 
-    private StatMapper() {}
+    private StatMapper() {
+    }
 
     public static HitStatDto toStatDto(StatsDto dto) {
         return HitStatDto.builder()
