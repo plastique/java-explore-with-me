@@ -17,8 +17,6 @@ import ru.practicum.explore_with_me.stats.dto.HitStatDto;
 import ru.practicum.explore_with_me.stats.server.dto.StatsRequestDto;
 import ru.practicum.explore_with_me.stats.server.service.contracts.StatsServiceInterface;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -57,14 +55,8 @@ public class StatsController {
 
         return statsService.getStats(
                 new StatsRequestDto(
-                        LocalDateTime.parse(
-                                URLDecoder.decode(start, StandardCharsets.UTF_8),
-                                formatter
-                        ),
-                        LocalDateTime.parse(
-                                URLDecoder.decode(end, StandardCharsets.UTF_8),
-                                formatter
-                        ),
+                        LocalDateTime.parse(start, formatter),
+                        LocalDateTime.parse(end, formatter),
                         uris,
                         unique
                 )
