@@ -2,42 +2,48 @@ package ru.practicum.explore_with_me.stats.server.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.explore_with_me.stats.server.dto.StatsDto;
+import org.springframework.stereotype.Repository;
+import ru.practicum.explore_with_me.stats.server.dto.StatsView;
 import ru.practicum.explore_with_me.stats.server.model.Hit;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Repository
 public interface HitRepository extends JpaRepository<Hit, Long> {
 
     @Query(
-            "SELECT s.app, s.uri, COUNT(*) hits "
-                    + "FROM Hit as s "
-                    + "WHERE s.timestamp >= :start AND s.timestamp <= :end "
-                    + "GROUP BY s.ip"
+            value = "SELECT h.app, h.uri, COUNT(h.ip) hits "
+                    + "FROM hits as h "
+                    + "WHERE h.created_at >= :start AND h.created_at <= :end "
+                    + "GROUP BY h.app, h.uri",
+             nativeQuery = true
     )
-    List<StatsDto> findAllByDatesUnique(LocalDateTime start, LocalDateTime end);
+    List<StatsView> getStatsByDatesUnique(LocalDateTime start, LocalDateTime end);
 
     @Query(
-            "SELECT s.app, s.uri, CONCAT('1') hits "
-                    + "FROM Hit as s "
-                    + "WHERE s.timestamp >= :start AND s.timestamp <= :end"
+            value = "SELECT h.app, h.uri, CONCAT('1') hits "
+                    + "FROM hits as h "
+                    + "WHERE h.created_at >= :start AND h.created_at <= :end",
+            nativeQuery = true
     )
-    List<StatsDto> findAllByDates(LocalDateTime start, LocalDateTime end);
+    List<StatsView> getStatsByDates(LocalDateTime start, LocalDateTime end);
 
 
     @Query(
-            "SELECT s.app, s.uri, COUNT(*) hits "
-                    + "FROM Hit as s "
-                    + "WHERE s.timestamp >= :start AND s.timestamp <= :end AND s.uri IN (:uris) "
-                    + "GROUP BY s.ip"
+            value = "SELECT h.app, h.uri, COUNT(h.ip) hits "
+                    + "FROM hits as h "
+                    + "WHERE h.created_at >= :start AND h.created_at <= :end AND h.uri IN (:uris) "
+                    + "GROUP BY h.app, h.uri",
+            nativeQuery = true
     )
-    List<StatsDto> findAllByDatesAndUriUnique(LocalDateTime start, LocalDateTime end, String[] uris);
+    List<StatsView> getStatsByDatesAndUriUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     @Query(
-            "SELECT s.app, s.uri, COUNT(*) hits "
-                    + "FROM Hit as s "
-                    + "WHERE s.timestamp >= :start AND s.timestamp <= :end AND s.uri IN (:uris)"
+            value = "SELECT h.app, h.uri, CONCAT('1') hits "
+                    + "FROM hits as h "
+                    + "WHERE h.created_at >= :start AND h.created_at <= :end AND h.uri IN (:uris)",
+            nativeQuery = true
     )
-    List<StatsDto> findAllByDatesAndUri(LocalDateTime start, LocalDateTime end, String[] uris);
+    List<StatsView> getStatsByDatesAndUri(LocalDateTime start, LocalDateTime end, List<String> uris);
 }

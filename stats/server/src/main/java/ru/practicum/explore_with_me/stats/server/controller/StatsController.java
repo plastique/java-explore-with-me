@@ -50,7 +50,7 @@ public class StatsController {
     public List<HitStatDto> getStats(
             @RequestParam @NotBlank String start,
             @RequestParam @NotBlank String end,
-            @RequestParam(required = false) String[] uris,
+            @RequestParam(required = false) List<String> uris,
             @RequestParam(required = false, defaultValue = "false") boolean unique
     ) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimePattern);

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,7 +19,7 @@ public class StatsRequestDto {
     private LocalDateTime end;
 
     @NotNull
-    private String[] uris;
+    private List<String> uris;
 
     private boolean unique;
 }

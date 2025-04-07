@@ -35,6 +35,7 @@ public class StatsService implements StatsServiceInterface {
         Hit hit = new Hit();
         hit.setApp(hitDto.getApp());
         hit.setIp(hitDto.getIp());
+        hit.setUri(hitDto.getUri());
         hit.setTimestamp(
                 LocalDateTime.parse(hitDto.getTimestamp(), DateTimeFormatter.ofPattern(dateTimePattern))
         );
@@ -46,18 +47,18 @@ public class StatsService implements StatsServiceInterface {
     @Transactional(readOnly = true)
     public List<HitStatDto> getStats(StatsRequestDto paramsDto) {
 
-        if (paramsDto.getUris() == null || paramsDto.getUris().length == 0) {
+        if (paramsDto.getUris() == null || paramsDto.getUris().isEmpty()) {
             return (paramsDto.isUnique()
-                    ? hitRepository.findAllByDatesUnique(paramsDto.getStart(), paramsDto.getEnd())
-                    : hitRepository.findAllByDates(paramsDto.getStart(), paramsDto.getEnd()))
+                    ? hitRepository.getStatsByDatesUnique(paramsDto.getStart(), paramsDto.getEnd())
+                    : hitRepository.getStatsByDates(paramsDto.getStart(), paramsDto.getEnd()))
                     .stream()
                     .map(StatMapper::toStatDto)
                     .toList();
         }
 
         return (paramsDto.isUnique()
-                ? hitRepository.findAllByDatesAndUriUnique(paramsDto.getStart(), paramsDto.getEnd(), paramsDto.getUris())
-                : hitRepository.findAllByDatesAndUri(paramsDto.getStart(), paramsDto.getEnd(), paramsDto.getUris()))
+                ? hitRepository.getStatsByDatesAndUriUnique(paramsDto.getStart(), paramsDto.getEnd(), paramsDto.getUris())
+                : hitRepository.getStatsByDatesAndUri(paramsDto.getStart(), paramsDto.getEnd(), paramsDto.getUris()))
                 .stream()
                 .map(StatMapper::toStatDto)
                 .toList();
