@@ -3,7 +3,6 @@ package ru.practicum.explore_with_me.stats.server.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +22,6 @@ import ru.practicum.explore_with_me.stats.server.service.contracts.StatsServiceI
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
@@ -46,7 +44,6 @@ public class StatsController {
             @RequestParam(required = false) List<String> uris,
             @RequestParam(required = false, defaultValue = "false") boolean unique
     ) {
-        log.debug("Get stats {}, {}", start, end);
         return statsService.getStats(
                 new StatsRequestDto(start, end, uris, unique)
         );
