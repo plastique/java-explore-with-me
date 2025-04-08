@@ -1,8 +1,10 @@
 package ru.practicum.explore_with_me.stats.server.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import org.springframework.beans.factory.annotation.Value;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,30 +14,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.explore_with_me.stats.constant.Constants;
 import ru.practicum.explore_with_me.stats.dto.HitAddRequestDto;
 import ru.practicum.explore_with_me.stats.dto.HitStatDto;
 import ru.practicum.explore_with_me.stats.server.dto.StatsRequestDto;
 import ru.practicum.explore_with_me.stats.server.service.contracts.StatsServiceInterface;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/")
+@RequiredArgsConstructor
 @Validated
 public class StatsController {
 
     private final StatsServiceInterface statsService;
-    private final String dateTimePattern;
-
-    public StatsController(
-            StatsServiceInterface statsService,
-            @Value("${app.date-time-pattern}") String dateTimePattern
-    ) {
-        this.statsService = statsService;
-        this.dateTimePattern = dateTimePattern;
-    }
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
@@ -46,20 +41,14 @@ public class StatsController {
     @GetMapping("/stats")
     @ResponseStatus(HttpStatus.OK)
     public List<HitStatDto> getStats(
-            @RequestParam @NotBlank String start,
-            @RequestParam @NotBlank String end,
+            @RequestParam @NotNull @DateTimeFormat(pattern = Constants.DATE_TIME_FORMAT) LocalDateTime start,
+            @RequestParam @NotNull @DateTimeFormat(pattern = Constants.DATE_TIME_FORMAT) LocalDateTime end,
             @RequestParam(required = false) List<String> uris,
             @RequestParam(required = false, defaultValue = "false") boolean unique
     ) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimePattern);
-
+        log.debug("Get stats {}, {}", start, end);
         return statsService.getStats(
-                new StatsRequestDto(
-                        LocalDateTime.parse(start, formatter),
-                        LocalDateTime.parse(end, formatter),
-                        uris,
-                        unique
-                )
+                new StatsRequestDto(start, end, uris, unique)
         );
     }
 

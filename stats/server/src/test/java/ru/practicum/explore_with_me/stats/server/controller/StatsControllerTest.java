@@ -44,7 +44,7 @@ class StatsControllerTest {
                 "app name 1",
                 "/some-path",
                 "127.1.0.1",
-                LocalDateTime.now().toString()
+                LocalDateTime.now()
         );
 
         mockMvc.perform(

@@ -1,6 +1,6 @@
 package ru.practicum.explore_with_me.stats.server.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.stats.dto.HitAddRequestDto;
@@ -11,23 +11,13 @@ import ru.practicum.explore_with_me.stats.server.model.Hit;
 import ru.practicum.explore_with_me.stats.server.repository.HitRepository;
 import ru.practicum.explore_with_me.stats.server.service.contracts.StatsServiceInterface;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class StatsService implements StatsServiceInterface {
 
     private final HitRepository hitRepository;
-    private final String dateTimePattern;
-
-    public StatsService(
-            HitRepository hitRepository,
-            @Value("${app.date-time-pattern}") String dateTimePattern
-    ) {
-        this.hitRepository = hitRepository;
-        this.dateTimePattern = dateTimePattern;
-    }
 
     @Override
     @Transactional
@@ -36,9 +26,7 @@ public class StatsService implements StatsServiceInterface {
         hit.setApp(hitDto.getApp());
         hit.setIp(hitDto.getIp());
         hit.setUri(hitDto.getUri());
-        hit.setTimestamp(
-                LocalDateTime.parse(hitDto.getTimestamp(), DateTimeFormatter.ofPattern(dateTimePattern))
-        );
+        hit.setTimestamp(hitDto.getTimestamp());
 
         hitRepository.save(hit);
     }

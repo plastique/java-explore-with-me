@@ -1,9 +1,15 @@
 package ru.practicum.explore_with_me.stats.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import ru.practicum.explore_with_me.stats.constant.Constants;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -18,6 +24,8 @@ public class HitAddRequestDto {
     @NotBlank
     private String ip;
 
-    @NotBlank
-    private String timestamp;
+    @NotNull
+    @DateTimeFormat(pattern = Constants.DATE_TIME_FORMAT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_TIME_FORMAT)
+    private LocalDateTime timestamp;
 }
