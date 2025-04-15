@@ -27,7 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users/{userId}/events")
 @Validated
-public class EventsController {
+public class UserEventsController {
 
     @GetMapping
     public List<EventListDto> getList(

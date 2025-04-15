@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users/{userId}/requests")
 @Validated
-public class RequestsController {
+public class UserRequestsController {
 
     @GetMapping
     public List<RequestListDto> getList(

@@ -12,31 +12,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.explore_with_me.main.dto.admin.category.CategoryDto;
-import ru.practicum.explore_with_me.main.dto.admin.category.CreateCategoryDto;
-import ru.practicum.explore_with_me.main.dto.admin.category.UpdateCategoryDto;
+import ru.practicum.explore_with_me.main.dto.admin.category.AdminCreateCategoryDto;
+import ru.practicum.explore_with_me.main.dto.admin.category.AdminUpdateCategoryDto;
+import ru.practicum.explore_with_me.main.dto.admin.compilation.AdminCompilationDto;
 
 @RestController
-@RequestMapping("/admin/categories")
+@RequestMapping("/admin/compilations")
 @Validated
-public class CategoriesController {
+public class AdminCompilationsController {
 
     @PostMapping
-    public CategoryDto create(
-            @RequestBody @Valid CreateCategoryDto dto
+    public AdminCompilationDto create(
+            @RequestBody @Valid AdminCreateCategoryDto dto
     ) {
         return null;
     }
 
-    @DeleteMapping("/{catId}")
+    @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable @Positive int catId) {
+    public void delete(@PathVariable @Positive int compId) {
     }
 
-    @PatchMapping("/{catId}")
-    public CategoryDto update(
-            @PathVariable @Positive int catId,
-            @RequestBody @Valid UpdateCategoryDto dto
+    @PatchMapping("/{compId}")
+    public AdminCompilationDto update(
+            @PathVariable @Positive int compId,
+            @RequestBody @Valid AdminUpdateCategoryDto dto
     ) {
         return null;
     }

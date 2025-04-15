@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.explore_with_me.main.constant.Constant;
-import ru.practicum.explore_with_me.main.dto.admin.event.EventDto;
-import ru.practicum.explore_with_me.main.dto.admin.event.EventListDto;
-import ru.practicum.explore_with_me.main.dto.admin.event.UpdateEventDto;
+import ru.practicum.explore_with_me.main.dto.admin.event.AdminEventDto;
+import ru.practicum.explore_with_me.main.dto.admin.event.AdminUpdateEventDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,10 +22,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/events")
 @Validated
-public class EventsController {
+public class AdminEventsController {
 
     @GetMapping
-    public List<EventListDto> getList(
+    public List<AdminEventDto> getList(
             @RequestParam(value = "users", required = false) List<Integer> users,
             @RequestParam(value = "states", required = false) List<String> states,
             @RequestParam(value = "categories", required = false) List<Integer> categories,
@@ -39,9 +38,9 @@ public class EventsController {
     }
 
     @PatchMapping("/{eventId}")
-    public EventDto update(
+    public AdminEventDto update(
             @PathVariable @Positive int eventId,
-            @RequestBody @Valid UpdateEventDto dto
+            @RequestBody @Valid AdminUpdateEventDto dto
     ) {
         return null;
     }

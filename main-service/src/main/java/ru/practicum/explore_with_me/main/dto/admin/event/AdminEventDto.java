@@ -1,13 +1,13 @@
-package ru.practicum.explore_with_me.main.dto.event;
+package ru.practicum.explore_with_me.main.dto.admin.event;
 
-import lombok.Data;
 import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class EventDto {
+public class AdminEventDto {
 
     private String annotation;
 
