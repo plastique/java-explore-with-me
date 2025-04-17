@@ -22,8 +22,8 @@ services:
       - POSTGRES_PASSWORD=stats-pwd
       - POSTGRES_USER=stats-user
       - POSTGRES_DB=stats
-#    volumes:
-#      - .docker/data/postgres-stat:/var/lib/postgresql/data/
+    volumes:
+      - .docker/data/postgres-stat:/var/lib/postgresql/data/
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
@@ -39,10 +39,12 @@ services:
       - "8080:8080"
     depends_on:
       - ewm-db
+      - stats-server
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - SPRING_DATASOURCE_USERNAME=ewm-user
       - SPRING_DATASOURCE_PASSWORD=ewm-pwd
+      - APP_STATS-SERVER_URL=http://stats-server:9090
 
   ewm-db:
     image: postgres:16.1
@@ -55,8 +57,8 @@ services:
       - POSTGRES_PASSWORD=ewm-pwd
       - POSTGRES_USER=ewm-user
       - POSTGRES_DB=ewm
-#    volumes:
-#      - .docker/data/postgres-ewm:/var/lib/postgresql/data/
+    volumes:
+      - .docker/data/postgres-ewm:/var/lib/postgresql/data/
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
