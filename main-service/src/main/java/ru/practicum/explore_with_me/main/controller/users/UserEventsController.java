@@ -3,6 +3,7 @@ package ru.practicum.explore_with_me.main.controller.users;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,68 +16,72 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.explore_with_me.main.constant.Constant;
-import ru.practicum.explore_with_me.main.dto.user.event.CreateEventDto;
-import ru.practicum.explore_with_me.main.dto.user.event.EventDto;
-import ru.practicum.explore_with_me.main.dto.user.event.EventListDto;
-import ru.practicum.explore_with_me.main.dto.user.event.EventRequestsListDto;
-import ru.practicum.explore_with_me.main.dto.user.event.UpdateEventDto;
+import ru.practicum.explore_with_me.main.dto.event.EventDto;
+import ru.practicum.explore_with_me.main.dto.user.event.UserCreateEventDto;
+import ru.practicum.explore_with_me.main.dto.user.event.UserUpdateEventDto;
 import ru.practicum.explore_with_me.main.dto.user.event.UpdateEventRequestsDto;
+import ru.practicum.explore_with_me.main.dto.user.request.EventRequestStatusDto;
+import ru.practicum.explore_with_me.main.dto.user.request.ParticipationRequestDto;
+import ru.practicum.explore_with_me.main.service.contracts.EventServiceInterface;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/users/{userId}/events")
 @Validated
+@RequiredArgsConstructor
 public class UserEventsController {
 
+    private final EventServiceInterface eventService;
+
     @GetMapping
-    public List<EventListDto> getList(
-            @PathVariable @Positive int userId,
+    public List<EventDto> getList(
+            @PathVariable @Positive Long userId,
             @RequestParam(value = "from", defaultValue = Constant.INT_MIN_STRING) @PositiveOrZero int from,
             @RequestParam(value = "size", defaultValue = "10") @Positive int size
     ) {
-        return List.of();
+        return eventService.getListByUser(userId, from, size);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventDto create(
-            @PathVariable @Positive int userId,
-            @RequestBody @Valid CreateEventDto dto
+            @PathVariable @Positive Long userId,
+            @RequestBody @Valid UserCreateEventDto dto
     ) {
-        return null;
+        return eventService.createByUser(userId, dto);
     }
 
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.CREATED)
     public EventDto getById(
-            @PathVariable @Positive int userId,
-            @PathVariable @Positive int eventId
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId
     ) {
-        return null;
+        return eventService.getByUserAndId(userId, eventId);
     }
 
     @PatchMapping("/{eventId}")
     public EventDto update(
-            @PathVariable @Positive int userId,
-            @PathVariable @Positive int eventId,
-            @RequestBody @Valid UpdateEventDto dto
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId,
+            @RequestBody @Valid UserUpdateEventDto dto
     ) {
-        return null;
+        return eventService.updateByUser(eventId, userId, dto);
     }
 
     @GetMapping("/{eventId}/requests")
-    public List<EventRequestsListDto> getRequestsList(
-            @PathVariable @Positive int userId,
-            @PathVariable @Positive int eventId
+    public List<ParticipationRequestDto> getRequestsList(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId
     ) {
         return List.of();
     }
 
     @PatchMapping("/{eventId}/requests")
-    public EventDto update(
-            @PathVariable @Positive int userId,
-            @PathVariable @Positive int eventId,
+    public EventRequestStatusDto update(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId,
             @RequestBody @Valid UpdateEventRequestsDto dto
     ) {
         return null;

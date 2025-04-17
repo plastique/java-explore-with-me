@@ -1,17 +1,17 @@
-package ru.practicum.explore_with_me.main.dto.admin.event;
+package ru.practicum.explore_with_me.main.dto.user.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.explore_with_me.main.constant.AdminEventState;
 import ru.practicum.explore_with_me.main.constant.Constant;
+import ru.practicum.explore_with_me.main.constant.UserEventState;
 import ru.practicum.explore_with_me.main.dto.contracts.UpdateEventDto;
 
 import java.time.LocalDateTime;
 
 @Data
-public class AdminUpdateEventDto implements UpdateEventDto {
+public class UserUpdateEventDto implements UpdateEventDto {
 
     @Size(min = 20, max = 2000)
     private String annotation;
@@ -33,7 +33,7 @@ public class AdminUpdateEventDto implements UpdateEventDto {
 
     private Boolean requestModeration;
 
-    private AdminEventState stateAction;
+    private UserEventState stateAction;
 
     @Size(min = 3, max = 120)
     private String title;

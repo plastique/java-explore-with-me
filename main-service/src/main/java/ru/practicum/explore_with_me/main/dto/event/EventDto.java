@@ -1,7 +1,9 @@
 package ru.practicum.explore_with_me.main.dto.event;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.Builder;
+import ru.practicum.explore_with_me.main.constant.Constant;
 
 import java.time.LocalDateTime;
 
@@ -9,16 +11,20 @@ import java.time.LocalDateTime;
 @Builder
 public class EventDto {
 
+    private Long id;
+
     private String annotation;
 
     private CategoryDto category;
 
     private int confirmedRequests;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_TIME_FORMAT)
     private LocalDateTime createdOn;
 
     private String description;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_TIME_FORMAT)
     private LocalDateTime eventDate;
 
     private InitiatorDto initiator;
@@ -29,6 +35,7 @@ public class EventDto {
 
     private int participantLimit;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_TIME_FORMAT)
     private LocalDateTime publishedOn;
 
     private boolean requestModeration;

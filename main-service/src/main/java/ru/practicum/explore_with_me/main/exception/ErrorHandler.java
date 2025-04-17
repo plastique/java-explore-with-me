@@ -26,7 +26,7 @@ public class ErrorHandler {
         return buildMessage(e, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({DataErrorException.class, UniqueException.class})
+    @ExceptionHandler({DataErrorException.class, UniqueException.class, InvalidArgumentException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiErrorMessage handleConflictException(RuntimeException e) {
         return buildMessage(e, HttpStatus.CONFLICT);

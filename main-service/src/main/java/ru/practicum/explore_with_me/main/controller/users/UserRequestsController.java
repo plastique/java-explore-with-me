@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.explore_with_me.main.dto.user.request.RequestDto;
-import ru.practicum.explore_with_me.main.dto.user.request.RequestListDto;
+import ru.practicum.explore_with_me.main.dto.user.request.ParticipationRequestDto;
 
 import java.util.List;
 
@@ -22,25 +21,25 @@ import java.util.List;
 public class UserRequestsController {
 
     @GetMapping
-    public List<RequestListDto> getList(
-            @PathVariable @Positive int userId
+    public List<ParticipationRequestDto> getList(
+            @PathVariable @Positive Long userId
     ) {
         return List.of();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RequestDto create(
-            @PathVariable @Positive int userId,
-            @RequestParam @Positive int eventId
+    public ParticipationRequestDto create(
+            @PathVariable @Positive Long userId,
+            @RequestParam @Positive Long eventId
     ) {
         return null;
     }
 
     @PatchMapping("/{requestId}/cancel")
-    public RequestDto update(
-            @PathVariable @Positive int userId,
-            @PathVariable @Positive int requestId
+    public ParticipationRequestDto update(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long requestId
     ) {
         return null;
     }

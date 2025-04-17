@@ -15,8 +15,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -32,6 +36,8 @@ import java.time.LocalDateTime;
                 @NamedAttributeNode("category")
         }
 )
+@NoArgsConstructor
+@AllArgsConstructor
 public class Event {
 
     public static final String ENTITY_GRAPH_USER_AND_CATEGORY = "event.user_and_category";
@@ -75,6 +81,9 @@ public class Event {
     @Column(name = "participant_limit")
     private Integer participantLimit = 0;
 
+    @Column(name = "confirmed_requests")
+    private Integer confirmedRequests = 0;
+
     @Column(nullable = false)
     private String title;
 
@@ -82,4 +91,15 @@ public class Event {
     private String annotation;
 
     private String description;
+
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+        updated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = LocalDateTime.now();
+    }
 }

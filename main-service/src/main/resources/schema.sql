@@ -23,11 +23,12 @@ CREATE TABLE IF NOT EXISTS events
     created TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
     updated TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
     participant_limit INTEGER NOT NULL DEFAULT 0,
+    confirmed_requests INTEGER NOT NULL DEFAULT 0,
     location_lat FLOAT NOT NULL DEFAULT 0.0,
     location_lon FLOAT NOT NULL DEFAULT 0.0,
     state VARCHAR(50) NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    annotation VARCHAR(1000),
+    title VARCHAR(150) NOT NULL,
+    annotation VARCHAR(2000),
     description TEXT
 );
 
@@ -61,6 +62,7 @@ CREATE INDEX IF NOT EXISTS idx_compilations_pinned ON compilations(pinned);
 -- events
 CREATE INDEX IF NOT EXISTS idx_events_user ON events(user_id);
 CREATE INDEX IF NOT EXISTS idx_events_category ON events(category_id);
+CREATE INDEX IF NOT EXISTS idx_events_state ON events(state);
 
 -- event requests
 CREATE INDEX IF NOT EXISTS idx_event_requests_event ON event_requests(event_id);
