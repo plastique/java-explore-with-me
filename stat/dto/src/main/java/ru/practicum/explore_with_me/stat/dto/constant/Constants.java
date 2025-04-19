@@ -1,4 +1,4 @@
-package ru.practicum.explore_with_me.stat.constant;
+package ru.practicum.explore_with_me.stat.dto.constant;
 
 public class Constants {
 

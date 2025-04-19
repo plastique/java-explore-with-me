@@ -24,11 +24,9 @@ public class StatsClient implements StatsClientInterface {
     private final WebClient client;
 
     StatsClient(
-            WebClient client,
             @Value("${app.stats-server.url}") String serverUri
     ) {
-        this.client = client
-                .mutate()
+        this.client = WebClient.builder()
                 .baseUrl(serverUri)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
