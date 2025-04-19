@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.main.constant.AdminEventState;
 import ru.practicum.explore_with_me.main.constant.Sort;
 import ru.practicum.explore_with_me.main.constant.UserEventState;
@@ -212,6 +213,7 @@ public class EventService implements EventServiceInterface {
     }
 
     @Override
+    @Transactional
     public EventDto updateByAdmin(Long id, AdminUpdateEventDto dto) {
         Event event = eventRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Event with id " + id + " not found")
@@ -254,6 +256,7 @@ public class EventService implements EventServiceInterface {
     }
 
     @Override
+    @Transactional
     public EventDto createByUser(Long userId, UserCreateEventDto dto) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User with id " + userId + " not found")
@@ -275,6 +278,7 @@ public class EventService implements EventServiceInterface {
     }
 
     @Override
+    @Transactional
     public EventDto updateByUser(Long id, Long userId, UserUpdateEventDto dto) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id " + userId + " not found");
@@ -322,8 +326,12 @@ public class EventService implements EventServiceInterface {
         );
     }
 
-    private static String getUrl(Event event) {
+    public String getUrl(Event event) {
         return EVENT_ROUTE_PATH + event.getId();
+    }
+
+    public Long getIdFromUrl(String url) {
+        return Long.valueOf(url.replace(EVENT_ROUTE_PATH, ""));
     }
 
     private void updateEventFromDto(Event event, UpdateEventDto dto) {

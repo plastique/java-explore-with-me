@@ -6,6 +6,7 @@ import ru.practicum.explore_with_me.main.dto.event.EventDto;
 import ru.practicum.explore_with_me.main.dto.event.SearchEventDto;
 import ru.practicum.explore_with_me.main.dto.user.event.UserCreateEventDto;
 import ru.practicum.explore_with_me.main.dto.user.event.UserUpdateEventDto;
+import ru.practicum.explore_with_me.main.model.Event;
 
 import java.util.List;
 
@@ -27,4 +28,7 @@ public interface EventServiceInterface {
 
     EventDto updateByUser(Long id, Long userId, UserUpdateEventDto dto);
 
+    String getUrl(Event event);
+
+    Long getIdFromUrl(String url);
 }

@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +21,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "event_requests")
-public class Request {
+public class EventRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +36,19 @@ public class Request {
     private Event event;
 
     @Enumerated(EnumType.STRING)
-    private RequestState state = RequestState.PENDING;
+    private EventRequestState state = EventRequestState.PENDING;
 
     private LocalDateTime created;
     private LocalDateTime updated;
+
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+        updated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = LocalDateTime.now();
+    }
 }

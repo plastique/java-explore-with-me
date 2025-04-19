@@ -2,6 +2,7 @@ package ru.practicum.explore_with_me.main.mapper;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.explore_with_me.main.dto.event.EventDto;
+import ru.practicum.explore_with_me.main.dto.event.EventShortDto;
 import ru.practicum.explore_with_me.main.dto.user.event.UserCreateEventDto;
 import ru.practicum.explore_with_me.main.model.Category;
 import ru.practicum.explore_with_me.main.model.Event;
@@ -37,6 +38,27 @@ public class EventMapper {
                 .publishedOn(event.getPublished())
                 .requestModeration(event.isRequestModeration())
                 .state(event.getState().name())
+                .title(event.getTitle())
+                .views(views)
+                .build();
+    }
+
+    public static EventShortDto toShortDto(final Event event, int views) {
+        return EventShortDto
+                .builder()
+                .id(event.getId())
+                .annotation(event.getAnnotation())
+                .category(new EventShortDto.CategoryDto(
+                        event.getCategory().getId(),
+                        event.getCategory().getName()
+                ))
+                .confirmedRequests(event.getConfirmedRequests())
+                .eventDate(event.getEventDate())
+                .initiator(new EventShortDto.InitiatorDto(
+                        event.getUser().getId(),
+                        event.getUser().getName()
+                ))
+                .paid(event.isPaid())
                 .title(event.getTitle())
                 .views(views)
                 .build();

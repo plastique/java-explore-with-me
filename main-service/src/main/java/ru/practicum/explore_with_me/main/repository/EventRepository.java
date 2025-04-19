@@ -19,4 +19,6 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
 
     Optional<Event> findByIdAndUser_Id(Long userId, Long id);
 
+    boolean existsByIdAndUser_Id(Long id, Long userId);
+
 }
