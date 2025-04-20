@@ -9,12 +9,14 @@ import ru.practicum.explore_with_me.main.dto.admin.category.AdminCategoryDto;
 import ru.practicum.explore_with_me.main.dto.admin.category.AdminCreateCategoryDto;
 import ru.practicum.explore_with_me.main.dto.admin.category.AdminUpdateCategoryDto;
 import ru.practicum.explore_with_me.main.dto.category.CategoryDto;
+import ru.practicum.explore_with_me.main.exception.LogicErrorException;
 import ru.practicum.explore_with_me.main.exception.UniqueException;
 import ru.practicum.explore_with_me.main.exception.DataErrorException;
 import ru.practicum.explore_with_me.main.exception.NotFoundException;
 import ru.practicum.explore_with_me.main.mapper.CategoryMapper;
 import ru.practicum.explore_with_me.main.model.Category;
 import ru.practicum.explore_with_me.main.repository.CategoryRepository;
+import ru.practicum.explore_with_me.main.repository.EventRepository;
 import ru.practicum.explore_with_me.main.service.contracts.CategoryServiceInterface;
 
 import java.util.List;
@@ -24,6 +26,7 @@ import java.util.List;
 public class CategoryService implements CategoryServiceInterface {
 
     private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
 
     @Transactional
     public AdminCategoryDto create(AdminCreateCategoryDto dto) {
@@ -51,7 +54,15 @@ public class CategoryService implements CategoryServiceInterface {
             throw new NotFoundException("Category with id " + id + " does not exist");
         }
 
-        categoryRepository.deleteById(id);
+        if (eventRepository.existsByCategory_Id(id)) {
+            throw new LogicErrorException("Category with id " + id + " has events");
+        }
+
+        try {
+            categoryRepository.deleteById(id);
+        } catch (RuntimeException e) {
+            throw new DataErrorException("DB error: " + e.getMessage());
+        }
     }
 
     @Override
@@ -88,7 +99,7 @@ public class CategoryService implements CategoryServiceInterface {
 
     @Override
     public List<CategoryDto> getList(int from, int size) {
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from / size, size);
 
         return categoryRepository.findAll(pageable).stream().map(CategoryMapper::toDto).toList();
     }

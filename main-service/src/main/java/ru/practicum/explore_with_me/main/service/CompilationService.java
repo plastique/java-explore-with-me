@@ -38,7 +38,7 @@ public class CompilationService implements CompilationServiceInterface {
 
     @Override
     public List<CompilationDto> getList(boolean pinned, int from, int size) {
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from / size, size);
 
         List<Compilation> compilations = pinned
                 ? compilationRepository.findAllByPinned(true, pageable)
@@ -76,7 +76,7 @@ public class CompilationService implements CompilationServiceInterface {
         try {
             compilation = compilationRepository.save(compilation);
         } catch (DataAccessException e) {
-            throw new DataErrorException(e.getMessage());
+            throw new DataErrorException("DB error: " + e.getMessage());
         }
 
         return CompilationMapper.toDto(
@@ -92,7 +92,11 @@ public class CompilationService implements CompilationServiceInterface {
             throw new NotFoundException("Compilation not found");
         }
 
-        compilationRepository.deleteById(id);
+        try {
+            compilationRepository.deleteById(id);
+        } catch (DataAccessException e) {
+            throw new DataErrorException("DB error: " + e.getMessage());
+        }
     }
 
     @Override
@@ -115,7 +119,7 @@ public class CompilationService implements CompilationServiceInterface {
         try {
             compilation = compilationRepository.save(compilation);
         } catch (DataAccessException e) {
-            throw new DataErrorException(e.getMessage());
+            throw new DataErrorException("DB error: " + e.getMessage());
         }
 
         return CompilationMapper.toDto(

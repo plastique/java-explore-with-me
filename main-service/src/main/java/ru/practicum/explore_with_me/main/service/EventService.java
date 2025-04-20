@@ -19,6 +19,7 @@ import ru.practicum.explore_with_me.main.dto.user.event.UserCreateEventDto;
 import ru.practicum.explore_with_me.main.dto.user.event.UserUpdateEventDto;
 import ru.practicum.explore_with_me.main.exception.DataErrorException;
 import ru.practicum.explore_with_me.main.exception.InvalidArgumentException;
+import ru.practicum.explore_with_me.main.exception.LogicErrorException;
 import ru.practicum.explore_with_me.main.exception.NotFoundException;
 import ru.practicum.explore_with_me.main.mapper.EventMapper;
 import ru.practicum.explore_with_me.main.model.Category;
@@ -54,7 +55,10 @@ public class EventService implements EventServiceInterface {
     @Override
     public List<EventDto> getList(SearchEventDto searchDto) {
 
-        Pageable pageable = PageRequest.of(searchDto.getFrom(), searchDto.getSize());
+        boolean hasRangeStart = searchDto.getRangeStart() != null;
+        boolean hasRangeEnd = searchDto.getRangeEnd() != null;
+
+        Pageable pageable = PageRequest.of(searchDto.getFrom() / searchDto.getSize(), searchDto.getSize());
         Specification<Event> spec = Specification.where(null);
 
         if (searchDto.getText() != null && !searchDto.getText().isBlank()) {
@@ -62,11 +66,11 @@ public class EventService implements EventServiceInterface {
                                     builder.or(
                                             builder.like(
                                                     builder.lower(root.get("annotation")),
-                                                    "%" + searchDto.getText() + "%"
+                                                    "%" + searchDto.getText().toLowerCase() + "%"
                                             ),
                                             builder.like(
                                                     builder.lower(root.get("description")),
-                                                    "%" + searchDto.getText() + "%"
+                                                    "%" + searchDto.getText().toLowerCase() + "%"
                                             )
                                     )
             );
@@ -82,13 +86,13 @@ public class EventService implements EventServiceInterface {
                                 builder.equal(root.get("paid"), searchDto.isPaid())
         );
 
-        if (searchDto.getRangeStart() != null) {
+        if (hasRangeStart) {
             spec = spec.and(((root, query, builder) ->
                     builder.greaterThan(root.get("eventDate"), searchDto.getRangeStart())
                             ));
         }
 
-        if (searchDto.getRangeEnd() != null) {
+        if (hasRangeEnd) {
             spec = spec.and(((root, query, builder) ->
                     builder.lessThan(root.get("eventDate"), searchDto.getRangeEnd())
                             ));
@@ -132,7 +136,7 @@ public class EventService implements EventServiceInterface {
             throw new NotFoundException("User with id " + userId + " not found");
         }
 
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from / size, size);
 
         return prepareEventDtoList(
                 eventRepository.findAllByUser_Id(userId, pageable)
@@ -154,12 +158,12 @@ public class EventService implements EventServiceInterface {
     }
 
     @Override
-    public EventDto getByUserAndId(Long userId, Long id) {
+    public EventDto getByIdAndUser(Long id, Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id " + userId + " not found");
         }
 
-        Event event = eventRepository.findByIdAndUser_Id(userId, id).orElseThrow(
+        Event event = eventRepository.findByIdAndUser_Id(id, userId).orElseThrow(
                 () -> new NotFoundException("Event with id " + id + " not found")
         );
 
@@ -174,7 +178,7 @@ public class EventService implements EventServiceInterface {
     @Override
     public List<EventDto> getListForAdmin(AdminSearchEventDto searchDto) {
 
-        Pageable pageable = PageRequest.of(searchDto.getFrom(), searchDto.getSize());
+        Pageable pageable = PageRequest.of(searchDto.getFrom() / searchDto.getSize(), searchDto.getSize());
         Specification<Event> spec = Specification.where(null);
 
         if (searchDto.getUsers() != null && !searchDto.getUsers().isEmpty()) {
@@ -220,7 +224,7 @@ public class EventService implements EventServiceInterface {
         );
 
         if (event.getState() == EventState.PUBLISHED || event.getState() == EventState.CANCELED) {
-            throw new InvalidArgumentException("Event with id " + id + " already published or canceled");
+            throw new LogicErrorException("Event with id " + id + " already published or canceled");
         }
 
         updateEventFromDto(event, dto);
@@ -244,7 +248,7 @@ public class EventService implements EventServiceInterface {
         try {
             event = eventRepository.save(event);
         } catch (DataAccessException e) {
-            throw new DataErrorException(e.getMessage());
+            throw new DataErrorException("DB error: " + e.getMessage());
         }
 
         String uri = getUrl(event);
@@ -271,7 +275,7 @@ public class EventService implements EventServiceInterface {
         try {
             event = eventRepository.save(event);
         } catch (DataAccessException e) {
-            throw new DataErrorException(e.getMessage());
+            throw new DataErrorException("DB error: " + e.getMessage());
         }
 
         return EventMapper.toDto(event, 0);
@@ -289,7 +293,7 @@ public class EventService implements EventServiceInterface {
         );
 
         if (event.getState() == EventState.PUBLISHED) {
-            throw new InvalidArgumentException("Event with id " + id + " already published");
+            throw new LogicErrorException("Event with id " + id + " already published");
         }
 
         updateEventFromDto(event, dto);
@@ -315,7 +319,7 @@ public class EventService implements EventServiceInterface {
         try {
             event = eventRepository.save(event);
         } catch (DataAccessException e) {
-            throw new DataErrorException(e.getMessage());
+            throw new DataErrorException("DB error: " + e.getMessage());
         }
 
         String uri = getUrl(event);

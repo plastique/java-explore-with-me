@@ -18,7 +18,7 @@ public class EventRequestDto {
 
     private Long id;
     private Long event;
-    private Long requestor;
+    private Long requester;
     private EventRequestState status;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_TIME_FORMAT)

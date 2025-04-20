@@ -1,6 +1,7 @@
 package ru.practicum.explore_with_me.main.dto.user.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -38,6 +39,7 @@ public class UserCreateEventDto {
     @NotNull
     @DateTimeFormat(pattern = Constant.DATE_TIME_FORMAT)
     @JsonFormat(pattern = Constant.DATE_TIME_FORMAT, shape = JsonFormat.Shape.STRING)
+    @FutureOrPresent
     private LocalDateTime eventDate;
 
     private boolean paid = false;

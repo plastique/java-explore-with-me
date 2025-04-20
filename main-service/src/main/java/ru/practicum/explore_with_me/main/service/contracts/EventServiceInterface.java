@@ -20,7 +20,7 @@ public interface EventServiceInterface {
 
     EventDto getById(Long id);
 
-    EventDto getByUserAndId(Long userId, Long id);
+    EventDto getByIdAndUser(Long id, Long userId);
 
     EventDto updateByAdmin(Long id, AdminUpdateEventDto dto);
 

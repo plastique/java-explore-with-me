@@ -1,11 +1,13 @@
 package ru.practicum.explore_with_me.main.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore_with_me.main.dto.admin.user.AdminCreateUserDto;
 import ru.practicum.explore_with_me.main.dto.admin.user.AdminUserDto;
+import ru.practicum.explore_with_me.main.exception.DataErrorException;
 import ru.practicum.explore_with_me.main.exception.NotFoundException;
 import ru.practicum.explore_with_me.main.exception.UniqueException;
 import ru.practicum.explore_with_me.main.mapper.UserMapper;
@@ -22,7 +24,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public List<AdminUserDto> getList(int from, int size, List<Long> ids) {
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from / size, size);
 
         return ids == null || ids.isEmpty()
             ? userRepository.findAll(pageable).stream().map(UserMapper::toAdminDto).toList()
@@ -37,7 +39,11 @@ public class UserService implements UserServiceInterface {
 
         User user = UserMapper.toEntity(dto);
 
-        user = userRepository.save(user);
+        try {
+            user = userRepository.save(user);
+        } catch (DataAccessException e) {
+            throw new DataErrorException("DB error: " + e.getMessage());
+        }
 
         return UserMapper.toAdminDto(user);
     }
@@ -48,7 +54,11 @@ public class UserService implements UserServiceInterface {
             throw new NotFoundException("User with id " + id + " does not exist");
         }
 
-        userRepository.deleteById(id);
+        try {
+            userRepository.deleteById(id);
+        } catch (DataAccessException e) {
+            throw new DataErrorException("DB error: " + e.getMessage());
+        }
     }
 
 }

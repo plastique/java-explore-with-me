@@ -11,7 +11,7 @@ public class EventRequestMapper {
         return EventRequestDto
                 .builder()
                 .id(request.getId())
-                .requestor(request.getUser().getId())
+                .requester(request.getUser().getId())
                 .event(request.getEvent().getId())
                 .status(request.getState())
                 .created(request.getCreated())

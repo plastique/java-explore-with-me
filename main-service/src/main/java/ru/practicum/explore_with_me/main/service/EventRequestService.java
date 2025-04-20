@@ -113,7 +113,7 @@ public class EventRequestService implements EventRequestServiceInterface {
             throw new LogicErrorException("Event request already exists");
         }
 
-        Event event = eventRepository.findByIdAndUser_Id(eventId, userId).orElseThrow(
+        Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Event with id=" + eventId + " not found")
         );
 
@@ -130,8 +130,7 @@ public class EventRequestService implements EventRequestServiceInterface {
         }
 
         if (
-                event.isRequestModeration()
-                && event.getParticipantLimit() > 0
+                event.getParticipantLimit() > 0
                 && event.getParticipantLimit() <= event.getConfirmedRequests()
         ) {
             throw new LogicErrorException("Participant limit exceeded");
@@ -141,15 +140,18 @@ public class EventRequestService implements EventRequestServiceInterface {
         eventRequest.setEvent(event);
         eventRequest.setUser(user);
         eventRequest.setState(
-                event.isRequestModeration()
+                event.isRequestModeration() && event.getParticipantLimit() > 0
                     ? EventRequestState.PENDING
                     : EventRequestState.CONFIRMED
         );
 
         try {
             eventRequestRepository.save(eventRequest);
+            if (!event.isRequestModeration()) {
+                updateEventConfirmedCount(eventRequest.getEvent().getId());
+            }
         } catch (DataAccessException e) {
-            throw new DataErrorException(e.getMessage());
+            throw new DataErrorException("DB error: " + e.getMessage());
         }
 
         return EventRequestMapper.toDto(eventRequest);

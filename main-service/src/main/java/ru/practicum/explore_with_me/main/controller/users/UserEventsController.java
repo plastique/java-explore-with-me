@@ -59,7 +59,7 @@ public class UserEventsController {
             @PathVariable @Positive Long userId,
             @PathVariable @Positive Long eventId
     ) {
-        return eventService.getByUserAndId(userId, eventId);
+        return eventService.getByIdAndUser(eventId, userId);
     }
 
     @PatchMapping("/{eventId}")
