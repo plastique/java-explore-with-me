@@ -1,7 +1,7 @@
 package ru.practicum.explore_with_me.main.validator;
 
 import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;it
+import jakarta.validation.ConstraintValidatorContext;
 import ru.practicum.explore_with_me.main.annotation.DateRange;
 
 import java.lang.reflect.Field;
