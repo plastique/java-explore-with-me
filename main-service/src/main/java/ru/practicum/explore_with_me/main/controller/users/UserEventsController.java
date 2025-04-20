@@ -55,7 +55,6 @@ public class UserEventsController {
     }
 
     @GetMapping("/{eventId}")
-    @ResponseStatus(HttpStatus.CREATED)
     public EventDto getById(
             @PathVariable @Positive Long userId,
             @PathVariable @Positive Long eventId

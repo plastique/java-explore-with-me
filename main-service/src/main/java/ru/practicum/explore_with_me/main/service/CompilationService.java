@@ -1,15 +1,21 @@
 package ru.practicum.explore_with_me.main.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explore_with_me.main.dto.admin.compilation.AdminCreateCompilationDto;
+import ru.practicum.explore_with_me.main.dto.admin.compilation.AdminUpdateCompilationDto;
 import ru.practicum.explore_with_me.main.dto.compilation.CompilationDto;
+import ru.practicum.explore_with_me.main.exception.DataErrorException;
 import ru.practicum.explore_with_me.main.exception.NotFoundException;
 import ru.practicum.explore_with_me.main.mapper.CompilationMapper;
 import ru.practicum.explore_with_me.main.model.Compilation;
 import ru.practicum.explore_with_me.main.model.Event;
 import ru.practicum.explore_with_me.main.repository.CompilationRepository;
+import ru.practicum.explore_with_me.main.repository.EventRepository;
 import ru.practicum.explore_with_me.main.service.contracts.CompilationServiceInterface;
 import ru.practicum.explore_with_me.main.service.contracts.EventServiceInterface;
 import ru.practicum.explore_with_me.main.service.contracts.StatsServiceInterface;
@@ -26,6 +32,7 @@ import java.util.stream.Collectors;
 public class CompilationService implements CompilationServiceInterface {
 
     private final CompilationRepository compilationRepository;
+    private final EventRepository eventRepository;
     private final EventServiceInterface eventService;
     private final StatsServiceInterface statsService;
 
@@ -50,6 +57,66 @@ public class CompilationService implements CompilationServiceInterface {
         Compilation compilation = compilationRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Compilation not found")
         );
+
+        return CompilationMapper.toDto(
+                compilation,
+                getViews(Collections.singletonList(compilation))
+        );
+    }
+
+    @Override
+    @Transactional
+    public CompilationDto createByAdmin(AdminCreateCompilationDto dto) {
+        Compilation compilation = new Compilation();
+        compilation.setPinned(dto.isPinned());
+        compilation.setName(dto.getTitle());
+
+        setEvents(compilation, dto.getEvents());
+
+        try {
+            compilation = compilationRepository.save(compilation);
+        } catch (DataAccessException e) {
+            throw new DataErrorException(e.getMessage());
+        }
+
+        return CompilationMapper.toDto(
+                compilation,
+                getViews(Collections.singletonList(compilation))
+        );
+    }
+
+    @Override
+    @Transactional
+    public void deleteByAdmin(Long id) {
+        if (!compilationRepository.existsById(id)) {
+            throw new NotFoundException("Compilation not found");
+        }
+
+        compilationRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public CompilationDto updateByAdmin(Long id, AdminUpdateCompilationDto dto) {
+        Compilation compilation = compilationRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Compilation not found")
+        );
+
+        if (dto.getTitle() != null) {
+            compilation.setName(dto.getTitle());
+        }
+
+        if (dto.getPinned() != null) {
+            compilation.setPinned(dto.getPinned());
+        }
+
+        setEvents(compilation, dto.getEvents());
+
+        try {
+            compilation = compilationRepository.save(compilation);
+        } catch (DataAccessException e) {
+            throw new DataErrorException(e.getMessage());
+        }
 
         return CompilationMapper.toDto(
                 compilation,
@@ -82,6 +149,20 @@ public class CompilationService implements CompilationServiceInterface {
                                    e -> eventService.getIdFromUrl(e.getKey()),
                                    Map.Entry::getValue
                            ));
+    }
+
+    private void setEvents(Compilation compilation, Set<Long> eventIds) {
+        if (eventIds == null || eventIds.isEmpty()) {
+            return;
+        }
+
+        Set<Event> events = eventRepository.findAllByIdIn(eventIds);
+
+        if (events.isEmpty() || events.size() != eventIds.size()) {
+            throw new NotFoundException("Events not found");
+        }
+
+        compilation.setEvents(events);
     }
 
 }

@@ -2,6 +2,7 @@ package ru.practicum.explore_with_me.main.controller.admin;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,33 +13,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.explore_with_me.main.dto.admin.category.AdminCreateCategoryDto;
-import ru.practicum.explore_with_me.main.dto.admin.category.AdminUpdateCategoryDto;
-import ru.practicum.explore_with_me.main.dto.admin.compilation.AdminCompilationDto;
+import ru.practicum.explore_with_me.main.dto.admin.compilation.AdminCreateCompilationDto;
+import ru.practicum.explore_with_me.main.dto.admin.compilation.AdminUpdateCompilationDto;
+import ru.practicum.explore_with_me.main.dto.compilation.CompilationDto;
+import ru.practicum.explore_with_me.main.service.contracts.CompilationServiceInterface;
 
 @RestController
 @RequestMapping("/admin/compilations")
 @Validated
+@RequiredArgsConstructor
 public class AdminCompilationsController {
 
+    private final CompilationServiceInterface compilationService;
+
     @PostMapping
-    public AdminCompilationDto create(
-            @RequestBody @Valid AdminCreateCategoryDto dto
+    @ResponseStatus(HttpStatus.CREATED)
+    public CompilationDto create(
+            @RequestBody @Valid AdminCreateCompilationDto dto
     ) {
-        return null;
+        return compilationService.createByAdmin(dto);
     }
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable @Positive int compId) {
+    public void delete(@PathVariable @Positive Long compId) {
+        compilationService.deleteByAdmin(compId);
     }
 
     @PatchMapping("/{compId}")
-    public AdminCompilationDto update(
-            @PathVariable @Positive int compId,
-            @RequestBody @Valid AdminUpdateCategoryDto dto
+    public CompilationDto update(
+            @PathVariable @Positive Long compId,
+            @RequestBody @Valid AdminUpdateCompilationDto dto
     ) {
-        return null;
+        return compilationService.updateByAdmin(compId, dto);
     }
 
 }

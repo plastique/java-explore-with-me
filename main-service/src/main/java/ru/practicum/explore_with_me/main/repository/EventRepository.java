@@ -9,6 +9,7 @@ import ru.practicum.explore_with_me.main.model.EventState;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
@@ -20,5 +21,7 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
     Optional<Event> findByIdAndUser_Id(Long userId, Long id);
 
     boolean existsByIdAndUser_Id(Long id, Long userId);
+
+    Set<Event> findAllByIdIn(Set<Long> events);
 
 }
