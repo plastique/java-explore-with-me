@@ -24,7 +24,7 @@ public class StatsClient implements StatsClientInterface {
     private final WebClient client;
 
     StatsClient(
-            @Value("${app.stats-server.url}") String serverUri
+            @Value("${app.stats.url}") String serverUri
     ) {
         this.client = WebClient.builder()
                 .baseUrl(serverUri)

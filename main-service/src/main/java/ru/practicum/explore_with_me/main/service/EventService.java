@@ -155,7 +155,7 @@ public class EventService implements EventServiceInterface {
 
         return EventMapper.toDto(
                 event,
-                statsService.getViewsCount(Set.of(uri)).getOrDefault(uri, 0)
+                statsService.getUniqueViewsCount(Set.of(uri)).getOrDefault(uri, 0)
         );
     }
 
