@@ -7,6 +7,8 @@ public interface StatsServiceInterface {
 
     Map<String, Integer> getViewsCount(Set<String> uris);
 
+    Map<String, Integer> getUniqueViewsCount(Set<String> uris);
+
     void addHit(String uri, String ip);
 
 }

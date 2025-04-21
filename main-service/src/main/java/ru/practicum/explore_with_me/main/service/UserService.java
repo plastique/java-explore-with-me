@@ -34,7 +34,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public AdminUserDto create(AdminCreateUserDto dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new UniqueException("User with email " + dto.getName() + " already exists");
+            throw new UniqueException("User with email " + dto.getEmail() + " already exists");
         }
 
         User user = UserMapper.toEntity(dto);

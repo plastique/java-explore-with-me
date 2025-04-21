@@ -82,9 +82,11 @@ public class EventService implements EventServiceInterface {
             );
         }
 
-        spec = spec.and((root, query, builder) ->
-                                builder.equal(root.get("paid"), searchDto.isPaid())
-        );
+        if (searchDto.isPaid()) {
+            spec = spec.and((root, query, builder) ->
+                                    builder.equal(root.get("paid"), searchDto.isPaid())
+            );
+        }
 
         if (hasRangeStart) {
             spec = spec.and(((root, query, builder) ->
@@ -153,7 +155,7 @@ public class EventService implements EventServiceInterface {
 
         return EventMapper.toDto(
                 event,
-                statsService.getViewsCount(Set.of(uri)).getOrDefault(uri, 0)
+                statsService.getUniqueViewsCount(Set.of(uri)).getOrDefault(uri, 0)
         );
     }
 

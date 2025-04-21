@@ -33,12 +33,20 @@ public class StatsService implements StatsServiceInterface {
     }
 
     public Map<String, Integer> getViewsCount(Set<String> uris) {
+        return getCount(uris, false);
+    }
+
+    public Map<String, Integer> getUniqueViewsCount(Set<String> uris) {
+        return getCount(uris, true);
+    }
+
+    private Map<String, Integer> getCount(Set<String> uris, boolean unique) {
         StatGetRequestDto request = new StatGetRequestDto();
 
-        request.setStart(LocalDateTime.MIN);
+        request.setStart(LocalDateTime.of(1970, 1, 1, 0, 0));
         request.setEnd(LocalDateTime.now());
         request.setUris(uris);
-        request.setUnique(false);
+        request.setUnique(unique);
 
         List<HitStatDto> hits = client.getStats(request);
         Map<String, Integer> hitMap = new HashMap<>();
@@ -56,6 +64,7 @@ public class StatsService implements StatsServiceInterface {
         request.setApp(appName);
         request.setIp(ip);
         request.setTimestamp(LocalDateTime.now());
+
         client.addHit(request);
     }
 
