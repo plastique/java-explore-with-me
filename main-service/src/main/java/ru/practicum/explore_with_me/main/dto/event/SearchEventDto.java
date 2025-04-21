@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.explore_with_me.main.annotation.DateRange;
+import ru.practicum.explore_with_me.main.constant.Constant;
 import ru.practicum.explore_with_me.main.constant.Sort;
 
 import java.time.LocalDateTime;
@@ -28,8 +30,10 @@ public class SearchEventDto {
 
     private boolean paid = false;
 
+    @DateTimeFormat(pattern = Constant.DATE_TIME_FORMAT)
     private LocalDateTime rangeStart;
 
+    @DateTimeFormat(pattern = Constant.DATE_TIME_FORMAT)
     private LocalDateTime rangeEnd;
 
     private boolean onlyAvailable = false;
