@@ -19,7 +19,7 @@ public interface EventRequestRepository extends JpaRepository<EventRequest, Long
     Integer countByEvent_IdAndState(Long eventId, EventRequestState eventRequestState);
 
     @Query(
-            value = "SELECT r.event_id, COUNT(*) "
+            value = "SELECT r.event_id, COUNT(r.event_id) "
                     + "FROM event_requests r "
                     + "WHERE r.event_id IN (:ids) AND r.state = :requestState "
                     + "GROUP BY r.event_id ",

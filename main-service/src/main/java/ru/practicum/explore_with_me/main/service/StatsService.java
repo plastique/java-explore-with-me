@@ -19,8 +19,9 @@ import java.util.Set;
 @ComponentScan(basePackages = "ru.practicum")
 public class StatsService implements StatsServiceInterface {
 
-    private final StatsClientInterface client;
+    private static final LocalDateTime DATE_TIME_MIN = LocalDateTime.of(1970, 1, 1, 0, 0);
 
+    private final StatsClientInterface client;
     private final String appName;
 
     StatsService(
@@ -43,7 +44,7 @@ public class StatsService implements StatsServiceInterface {
     private Map<String, Integer> getCount(Set<String> uris, boolean unique) {
         StatGetRequestDto request = new StatGetRequestDto();
 
-        request.setStart(LocalDateTime.of(1970, 1, 1, 0, 0));
+        request.setStart(DATE_TIME_MIN);
         request.setEnd(LocalDateTime.now());
         request.setUris(uris);
         request.setUnique(unique);

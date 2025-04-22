@@ -39,7 +39,7 @@ public class CategoryService implements CategoryServiceInterface {
 
         try {
             category = categoryRepository.save(category);
-        } catch (RuntimeException e) {
+        } catch (DataErrorException e) {
             throw new DataErrorException("DB error: " + e.getMessage());
         }
 
@@ -60,7 +60,7 @@ public class CategoryService implements CategoryServiceInterface {
 
         try {
             categoryRepository.deleteById(id);
-        } catch (RuntimeException e) {
+        } catch (DataErrorException e) {
             throw new DataErrorException("DB error: " + e.getMessage());
         }
     }
@@ -81,7 +81,7 @@ public class CategoryService implements CategoryServiceInterface {
 
         try {
             category = categoryRepository.save(category);
-        } catch (RuntimeException e) {
+        } catch (DataErrorException e) {
             throw new DataErrorException("DB error: " + e.getMessage());
         }
 

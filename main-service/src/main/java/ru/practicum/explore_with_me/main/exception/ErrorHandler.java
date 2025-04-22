@@ -1,10 +1,10 @@
 package ru.practicum.explore_with_me.main.exception;
 
-import jakarta.validation.ConstraintViolationException;
+import jakarta.servlet.ServletException;
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,12 +18,12 @@ public class ErrorHandler {
 
     @ExceptionHandler({
             MethodArgumentNotValidException.class,
-            ConstraintViolationException.class,
-            MissingRequestValueException.class,
+            ValidationException.class,
+            ServletException.class,
             InvalidArgumentException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrorMessage handleValidationException(Throwable e) {
+    public ApiErrorMessage handleValidationException(Exception e) {
         return buildMessage(e, HttpStatus.BAD_REQUEST);
     }
 
@@ -45,7 +45,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiErrorMessage handleOtherError(Throwable e) {
+    public ApiErrorMessage handleOtherError(Exception e) {
         return buildMessage(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
