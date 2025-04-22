@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.explore_with_me.stat.constant.Constants;
+import ru.practicum.explore_with_me.stat.dto.constant.Constants;
 
 import java.time.LocalDateTime;
 

@@ -11,6 +11,7 @@ import ru.practicum.explore_with_me.stat.server.model.Hit;
 import ru.practicum.explore_with_me.stat.server.repository.HitRepository;
 import ru.practicum.explore_with_me.stat.server.service.contracts.StatsServiceInterface;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 @Service
@@ -34,6 +35,10 @@ public class StatsService implements StatsServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public List<HitStatDto> getStats(StatRequestDto paramsDto) {
+
+        if (paramsDto.getStart().isAfter(paramsDto.getEnd())) {
+            throw new InvalidParameterException("Start date cannot be after end date");
+        }
 
         if (paramsDto.getUris() == null || paramsDto.getUris().isEmpty()) {
             return (paramsDto.isUnique()
