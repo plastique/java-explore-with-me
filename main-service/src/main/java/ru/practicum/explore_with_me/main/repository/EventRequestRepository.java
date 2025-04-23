@@ -34,4 +34,6 @@ public interface EventRequestRepository extends JpaRepository<EventRequest, Long
 
     Optional<EventRequest> findByIdAndUser_Id(Long id, Long userId);
 
+    boolean existsByEvent_IdAndUser_IdAndStateIs(Long eventId, Long userId, EventRequestState eventRequestState);
+
 }

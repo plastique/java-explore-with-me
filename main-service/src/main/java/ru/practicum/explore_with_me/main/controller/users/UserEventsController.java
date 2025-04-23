@@ -6,6 +6,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.explore_with_me.main.constant.Constant;
+import ru.practicum.explore_with_me.main.dto.comment.CommentDto;
 import ru.practicum.explore_with_me.main.dto.event.EventDto;
+import ru.practicum.explore_with_me.main.dto.user.event.UserCreateCommentDto;
 import ru.practicum.explore_with_me.main.dto.user.event.UserCreateEventDto;
+import ru.practicum.explore_with_me.main.dto.user.event.UserUpdateCommentDto;
 import ru.practicum.explore_with_me.main.dto.user.event.UserUpdateEventDto;
 import ru.practicum.explore_with_me.main.dto.user.event.UpdateEventRequestsDto;
 import ru.practicum.explore_with_me.main.dto.user.request.EventRequestResultDto;
 import ru.practicum.explore_with_me.main.dto.user.request.EventRequestDto;
+import ru.practicum.explore_with_me.main.service.contracts.CommentServiceInterface;
 import ru.practicum.explore_with_me.main.service.contracts.EventRequestServiceInterface;
 import ru.practicum.explore_with_me.main.service.contracts.EventServiceInterface;
 
@@ -35,6 +40,7 @@ public class UserEventsController {
 
     private final EventServiceInterface eventService;
     private final EventRequestServiceInterface eventRequestService;
+    private final CommentServiceInterface commentService;
 
     @GetMapping
     public List<EventDto> getList(
@@ -86,6 +92,36 @@ public class UserEventsController {
             @RequestBody @Valid UpdateEventRequestsDto dto
     ) {
         return eventRequestService.updateByEventIdAndStatusId(eventId, userId, dto);
+    }
+
+    @PostMapping("/{eventId}/comments")
+    public CommentDto addComment(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId,
+            @RequestBody @Valid UserCreateCommentDto dto
+    ) {
+        return commentService.create(eventId, userId, dto);
+    }
+
+    @PatchMapping("/{eventId}/comments/{commentId}")
+    public CommentDto updateComment(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId,
+            @PathVariable @Positive Long commentId,
+            @RequestBody @Valid UserUpdateCommentDto dto
+    ) {
+        dto.setId(commentId);
+
+        return commentService.update(eventId, userId, dto);
+    }
+
+    @DeleteMapping("/{eventId}/comments/{commentId}")
+    public void deleteComment(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId,
+            @PathVariable @Positive Long commentId
+    ) {
+        commentService.deleteByAuthor(eventId, userId, commentId);
     }
 
 }
