@@ -952,7 +952,7 @@
 							"    pm.expect(target.text).to.be.a(\"string\");\r",
 							"    pm.expect(target.author).to.be.an(\"object\");\r",
 							"\r",
-							"    pm.expect(pm.collectionVariables.get(\"commentId\")).equal(target.id, 'Идентификаторы комментария должны совпадать');\r",
+							"    pm.expect(parseInt(pm.collectionVariables.get(\"commentId\"))).equal(target.id, 'Идентификаторы комментария должны совпадать');\r",
 							"    pm.expect(source.text).equal(target.text, 'Текст комментария должен совпадать');\r",
 							"});"
 						],
@@ -1070,8 +1070,6 @@
 							"});\r",
 							"\r",
 							"const target = pm.response.json();\r",
-							"\r",
-							"console.log(target.length);\r",
 							"\r",
 							"pm.test(\"Неверное количество записей в ответе\", function () {\r",
 							"    pm.expect(target).length.greaterThan(0);\r",
