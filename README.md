@@ -28,3 +28,5 @@
 #### GET `/events/{eventId}/comments`
 Получить постраничный список комментариев.
 Новые записи в начале списка.
+
+PR - https://github.com/plastique/java-explore-with-me/pull/3
