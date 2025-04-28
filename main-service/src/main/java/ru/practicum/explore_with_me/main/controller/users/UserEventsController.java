@@ -95,6 +95,7 @@ public class UserEventsController {
     }
 
     @PostMapping("/{eventId}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
     public CommentDto addComment(
             @PathVariable @Positive Long userId,
             @PathVariable @Positive Long eventId,
@@ -116,6 +117,7 @@ public class UserEventsController {
     }
 
     @DeleteMapping("/{eventId}/comments/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteComment(
             @PathVariable @Positive Long userId,
             @PathVariable @Positive Long eventId,

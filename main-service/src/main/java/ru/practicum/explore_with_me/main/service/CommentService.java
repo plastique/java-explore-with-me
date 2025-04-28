@@ -44,7 +44,7 @@ public class CommentService implements CommentServiceInterface {
 
         checkEvent(eventId);
 
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Sort sort = Sort.by(Sort.Direction.DESC, "created");
         Pageable pageable = PageRequest.of(from / size, size, sort);
 
         return commentRepository.findAllByEvent_Id(eventId, pageable)
@@ -63,17 +63,13 @@ public class CommentService implements CommentServiceInterface {
             throw new LogicErrorException("Event is not published");
         }
 
-        if (event.getEventDate().isAfter(LocalDateTime.now())) {
-            throw new LogicErrorException("You can comment on an event only after it happens");
-        }
-
         User user = userRepository.findById(authorId).orElseThrow(
                 () -> new NotFoundException("User not found")
         );
 
         if (
                 !event.getUser().getId().equals(user.getId())
-                        && eventRequestRepository.existsByEvent_IdAndUser_IdAndStateIs(eventId, authorId, EventRequestState.CONFIRMED)
+                && !eventRequestRepository.existsByEvent_IdAndUser_IdAndStateIs(eventId, authorId, EventRequestState.CONFIRMED)
         ) {
             throw new LogicErrorException("The user is not the owner of the event or has not applied for participation");
         }
@@ -109,7 +105,9 @@ public class CommentService implements CommentServiceInterface {
             throw new LogicErrorException("You can't delete this comment");
         }
 
-        comment.setText(comment.getText());
+        if (dto.getText() != null) {
+            comment.setText(dto.getText());
+        }
 
         try {
             commentRepository.save(comment);
@@ -158,13 +156,13 @@ public class CommentService implements CommentServiceInterface {
     }
 
     private void checkEvent(Long id) {
-        if (eventRepository.existsById(id)) {
+        if (!eventRepository.existsById(id)) {
             throw new NotFoundException("Event with id=" + id + " not found");
         }
     }
 
     private void checkUser(Long id) {
-        if (userRepository.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             throw new NotFoundException("User with id=" + id + " not found");
         }
     }

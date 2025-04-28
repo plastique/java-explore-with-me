@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.explore_with_me.main.constant.Constant;
 import ru.practicum.explore_with_me.main.dto.comment.CommentDto;
-import ru.practicum.explore_with_me.main.service.CommentService;
 import ru.practicum.explore_with_me.main.service.contracts.CommentServiceInterface;
 
 import java.util.List;
@@ -22,8 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentsController {
 
-    private final CommentServiceInterface commentServiceInterface;
-    private final CommentService commentService;
+    private final CommentServiceInterface commentService;
 
     @GetMapping
     public List<CommentDto> getEventComments(
