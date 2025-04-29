@@ -125,7 +125,7 @@ public class EventRequestService implements EventRequestServiceInterface {
             throw new LogicErrorException("Event owner is same user");
         }
 
-        if (!event.getState().equals(EventState.PUBLISHED)) {
+        if (!EventState.PUBLISHED.equals(event.getState())) {
             throw new LogicErrorException("Event is not published");
         }
 
@@ -163,7 +163,7 @@ public class EventRequestService implements EventRequestServiceInterface {
         EventRequest eventRequest = eventRequestRepository.findByIdAndUser_Id(id, userId).orElseThrow(
                 () -> new NotFoundException("Event request with id=" + id + " not found")
         );
-        boolean isConfirmed = eventRequest.getState().equals(EventRequestState.CONFIRMED);
+        boolean isConfirmed = EventRequestState.CONFIRMED.equals(eventRequest.getState());
 
         eventRequest.setState(EventRequestState.CANCELED);
         eventRequestRepository.save(eventRequest);
@@ -205,17 +205,17 @@ public class EventRequestService implements EventRequestServiceInterface {
 
         for (EventRequest eventRequest : requests) {
             if (!dto.getRequestIds().contains(eventRequest.getId())) {
-                if (eventRequest.getState().equals(EventRequestState.PENDING)) {
+                if (EventRequestState.PENDING.equals(eventRequest.getState())) {
                     pendingLeft.add(eventRequest);
                 }
                 continue;
             }
 
-            if (eventRequest.getState() != EventRequestState.PENDING) {
+            if (!EventRequestState.PENDING.equals(eventRequest.getState())) {
                 throw new InvalidArgumentException("Request #" + eventRequest.getId() + " is not pending");
             }
 
-            if (dto.getStatus().equals(EventRequestState.CONFIRMED) && current < limit) {
+            if (EventRequestState.CONFIRMED.equals(dto.getStatus()) && current < limit) {
                 eventRequest.setState(EventRequestState.CONFIRMED);
                 confirmed.add(eventRequest);
                 current++;
