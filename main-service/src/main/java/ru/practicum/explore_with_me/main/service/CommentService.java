@@ -59,7 +59,7 @@ public class CommentService implements CommentServiceInterface {
                 () -> new NotFoundException("Event not found")
         );
 
-        if (!event.getState().equals(EventState.PUBLISHED)) {
+        if (!EventState.PUBLISHED.equals(event.getState())) {
             throw new LogicErrorException("Event is not published");
         }
 
